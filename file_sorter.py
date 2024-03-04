@@ -1,9 +1,10 @@
 import argparse
+import logging
 from pathlib import Path
+import re
 from shutil import copyfile, rmtree
 from threading import Thread
-import logging
-import re
+
 
 '''
 WARNING: the sorting folder and the destination folder cannot be the same
@@ -23,14 +24,12 @@ EXTENSIONS = {
     'archives': ['.zip', '.gz', '.tar']
 }
 
-
 CYRILLIC_SYMBOLS = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ'
 
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
 
 TRANS = {}
-
 
 parser = argparse.ArgumentParser(description='App for sorting folder')
 
@@ -40,7 +39,6 @@ parser.add_argument('-o', '--output', default='dist')
 args = vars(parser.parse_args())
 source = args.get('source')
 output = args.get('output')
-
 
 
 for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
@@ -53,7 +51,6 @@ def normalize(name: str) -> str:
     translate = re.sub(r'\W', '_', translate)
     
     return translate
-
 
 
 def get_categories(file:Path):
@@ -107,6 +104,7 @@ if __name__ == '__main__':
     get_folders(folder_for_sorting)
     
     threads = []
+    
     for folder in folders:
         th = Thread(target=sort_file, args=(folder,))
         th.start()
